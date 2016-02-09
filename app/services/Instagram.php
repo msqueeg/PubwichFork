@@ -16,7 +16,7 @@
 			$this->callback_function = array('Pubwich', 'json_decode');
 			$this->cache_id = md5(implode('/', $config)) . '.data';
 			$this->setURLTemplate('https://instagram.com/'.$config['username'].'/');
-			$this->setItemTemplate('<li><a title="{{{title}}}" href="{{{link}}}"><img src="{{{thumbnail}}}" alt="{{{title}}}" height="75" /></a></li>'."\n");
+			$this->setItemTemplate('<li><a title="{{{title}}}" href="{{{link}}}"><img src="{{{thumbnail}}}" alt="{{{title}}}" height="75" /><p>{{{title}}}</p></a></li>'."\n");
 		}
 
 		public function buildCache($Cache_Lite = null) {
@@ -25,21 +25,21 @@
 	        $channelsuri = 
 	        $userdata = Pubwich::json_decode(file_get_contents(
 	            sprintf(
-                    'https://api.instagram.com/v1/users/search?q=%s&count=1&client_id=%s',
+                    'https://api.instagram.com/v1/users/%s/?access_token=%s',
                     trim($this->getConfigValue('username')),
                     trim($this->getConfigValue('client_id'))
     	        )
 	        ));
 
             if ($userdata && isset($userdata->data)) {
-                $userid = $userdata->data[0]->id;
+                $userid = $userdata->data->id;
             }
             else {
                 return false;
             }
 
 			$recenturi = sprintf(
-                'https://api.instagram.com/v1/users/%s/media/recent?client_id=%s',
+                'https://api.instagram.com/v1/users/%s/media/recent/?access_token=%s',
                 $userid,
                 trim($this->getConfigValue('client_id'))
 			);
