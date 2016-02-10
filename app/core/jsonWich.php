@@ -106,4 +106,5 @@
                 $output_cache = self::getOutputCacheObject();
                 return $output_cache->get($service_object->cache_id);
             }
+
     }

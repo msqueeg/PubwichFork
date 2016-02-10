@@ -31,9 +31,22 @@ class Routing {
     }
 }
 
+class wpWich extends jsonWich {
+    public function getFeedItem($service_name) {
+        $service_object = self::getActiveService($service_name);
+        $service_object->init();
+        $data_array = $service_object->getProcessedData();
+        //return get_class_methods($service_object);
+        $data = $service_object->processDataItem($data_array[0]);
+        return $data;
+    }
+}
+
+
 jsonWich::init();
 $routing = new Routing;
 $service = $routing->router();
-echo jsonWich::getFeedCache($service);
+
+echo jsonWich::getFeedCache('twitter_feed');
 
 ?>
