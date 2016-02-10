@@ -63,7 +63,7 @@ class wpWich extends jsonWich {
             case "youtube":
                 $o = '<div class="'.$name.'">';
                 $o .= '<figure>';
-                $o .= '<img src="'.$item_array['media_standard_url'].'">';
+                $o .= '<img src="'.$item_array['media_thumbnail_url'].'">';
                 $o .= '<a href="'.$item_array['link'].'">';
                 $o .= '<figcaption>'.$item_array['title'].'</figcaption></a>';
                 $o .= '</figure>';
@@ -97,7 +97,7 @@ add_shortcode('fb_item', 'load_fb_block');
 function load_youtube() {
     $wpWich = new wpWich();
     $item_array = $wpWich->getFeedItemArray('youtube_uploads');
-    print_r($item_array);
+    return $wpWich->formatFeedItem($item_array, 'youtube');
 }
 
 add_shortcode('youtube_item', 'load_youtube');
