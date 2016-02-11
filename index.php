@@ -40,13 +40,28 @@ class wpWich extends jsonWich {
         $data = $service_object->processDataItem($data_array[0]);
         return $data;
     }
+
+    public function getFeeditems($service_name) {
+        $service_object = self::getActiveService($service_name);
+        $service_object->init();
+        $data_array = $service_object->getProcessedData();
+        $processed_array = array();
+        foreach ($data_array as $data_item){
+            $processed_array[] = $service_object->processDataItem($data_item);
+        }
+        return $processed_array;
+    }
 }
 
 
 jsonWich::init();
 $routing = new Routing;
 $service = $routing->router();
+$wpWich = new wpWich();
+//echo jsonWich::getFeedCache('twitter_feed');
 
-echo jsonWich::getFeedCache('twitter_feed');
+echo '<pre>';
+print_r(jsonWich::listActiveServices());
+echo '</pre>';
 
 ?>

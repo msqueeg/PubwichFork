@@ -33,14 +33,17 @@ require('app/core/jsonWich.php');
 
 jsonWich::init();
 
-
+// interface with pubwich to return formatted feed items
 class wpWich extends jsonWich {
-    public function getFeedItemArray($service_name) {
+    public function getFeedItems($service_name) {
         $service_object = self::getActiveService($service_name);
         $service_object->init();
         $data_array = $service_object->getProcessedData();
-        $data = $service_object->processDataItem($data_array[0]);
-        return $data;
+        $processed_array = array();
+        foreach ($data_array as $data_item){
+            $processed_array[] = $service_object->processDataItem($data_item);
+        }
+        return $processed_array;
     }
 
     public function formatFeedItem($item_array, $name) {
@@ -76,28 +79,33 @@ class wpWich extends jsonWich {
             default:
         }
     }
+
 }
 
-function load_tweet_block() {
+function load_tweet($atts) {
+    $item_atts = shortcode_atts(array('item_no' => 0), $atts);
     $wpWich = new wpWich();
-    $item_array = $wpWich->getFeedItemArray('twitter_feed');
-    return $wpWich->formatFeedItem($item_array, 'twitter');
+    $item_arrays = $wpWich->getFeedItems('twitter_feed');
+    return $wpWich->formatFeedItem($item_arrays[$item_atts['item_no']], 'twitter');
 }
 
-add_shortcode('twitter_item', 'load_tweet_block');
+add_shortcode('twitter_item', 'load_tweet');
 
-function load_fb_block() {
+function load_facebook($atts) {
+    $item_atts = shortcode_atts(array('item_no' => 0), $atts);
     $wpWich = new wpWich();
-    $item_array = $wpWich->getFeedItemArray('facebook_page');
-    return $wpWich->formatFeedItem($item_array, 'facebook');
+    $item_arrays = $wpWich->getFeedItems('facebook_page');
+    return $wpWich->formatFeedItem($item_arrays[$item_atts['item_no']], 'facebook');
 }
 
-add_shortcode('fb_item', 'load_fb_block');
+add_shortcode('fb_item', 'load_facebook');
 
-function load_youtube() {
+function load_youtube($atts) {
+    $item_atts = shortcode_atts(array('item_no' => 0), $atts);
     $wpWich = new wpWich();
-    $item_array = $wpWich->getFeedItemArray('youtube_uploads');
-    return $wpWich->formatFeedItem($item_array, 'youtube');
+    $item_arrays = $wpWich->getFeedItems('youtube_uploads');
+    return $wpWich->formatFeedItem($item_arrays[$item_atts['item_no']], 'youtube');
 }
 
 add_shortcode('youtube_item', 'load_youtube');
+
